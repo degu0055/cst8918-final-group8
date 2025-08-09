@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: remix-weather-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: remix-weather
+  template:
+    metadata:
+      labels:
+        app: remix-weather
+    spec:
+      containers:
+      - name: remix-weather
+        image: degu0055/remix-weather:v0.2.0
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: WEATHER_API_KEY
+          value: "4c019c50143272fcc44b5ebe63ce5d1f"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: remix-weather-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 3000
+  selector:
+    app: remix-weather
